@@ -9,4 +9,4 @@ tiz-id - Fake ID System
 * License UI psd - https://github.com/jonassvensson4/jsfour-idcard
 * Ped Creation - https://github.com/gfg-roleplay/gfg_deliveries
 ##  Preview
-[Video](https://streamable.com/8ncqdo)
+*[Video](https://streamable.com/8ncqdo)
