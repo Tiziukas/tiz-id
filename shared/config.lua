@@ -1,14 +1,9 @@
 Config = {}
 
-Config.PedLocation = {
-    ['Dealer'] = {                                           -- 
-        ped = {                                                 -- Determines ped variables.
-            coords = vec4(-1428.8152, -249.5527, 46.3791, 48.4938),-- Determines the coords of the ped (Needs to be a vector4).
-            model = 'a_m_m_afriamer_01',                          -- Determines the ped model. (Optional)
-            scenario = 'WORLD_HUMAN_DRUG_DEALER_HARD',                 -- Determines the ped scenario. (Optional)
-        },
-    },
-}
+Config.NPCLocation = vec3(-2026.6785, -369.7483, 19.0969)
+Config.NPCLocationheading = 203.1064
+Config.NPCModel = 'a_m_m_business_01'
+
 Config.InteractionMethod = "target" -- No Support For TextUI yet.
 Config.Price = 2500
 Config.PaymentType = "black_money" -- black_money or money
