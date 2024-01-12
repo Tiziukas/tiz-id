@@ -1,17 +1,18 @@
 ESX = exports["es_extended"]:getSharedObject()
 local bossPeds = {}
 local menuOpen = false
+local qtarget = exports.qtarget
+local JobStartLocation = lib.points.new(Config.NPCLocation, 50)
 AddEventHandler('onClientResourceStart', function (resourceName)
     if(GetCurrentResourceName() ~= resourceName) then
         return
     else
-        bossPeds = lib.callback.await('tizid:getpeds', false)
-        CreatePedInteractions()
+
     end
 end)
 
 RegisterNetEvent('tizid:openmenu')
-AddEventHandler("tizid:openmenu", function(ped)
+AddEventHandler("tizid:openmenu", function()
     menuOpen = true
     -- Registers the menu
     lib.registerContext({
@@ -23,7 +24,7 @@ AddEventHandler("tizid:openmenu", function(ped)
                 title = Config.Language.buy,
                 description = Config.Language.buydescription,
                 icon = 'truck-fast',
-                metadata = {{label = 'Price of an ID $', value = Config.Price}},
+                metadata = {{label = 'Kaina $', value = Config.Price}},
                 onSelect = function()
                     DoApplication()
                 end,
@@ -71,43 +72,21 @@ function DoApplication()
         })
     end
 end
-function CreatePedInteractions()
-    for k, ped in pairs(bossPeds) do
-        local pedType = Config.PedLocation[ped.bossType]
-        ped.hasMenu = false
-
-        local point = lib.points.new({
-            coords = pedType.ped.coords,
-            distance = 5.0,
-        })
-
-        function point:onEnter()
-            entity = NetworkGetEntityFromNetworkId(ped.netId)
-            entCoords = GetEntityCoords(entity)
-
-            if Config.InteractionMethod == "target" then
-                if not ped.hasMenu then
-                    ped.hasMenu = true
-                    local pedOptions = {{
-                        name = Config.Language.pedname,
-                        icon = 'fa fa-vcard',
-                        label = Config.Language.eyepedname,
-                        onSelect = function()
-                            TriggerEvent('tizid:openmenu', ped)
-                        end 
-                    }}
-                    exports.ox_target:addEntity(ped.netId, pedOptions)
-                end
-            end
-            SetPedCombatAttributes(NetworkGetEntityFromNetworkId(ped.netId), 292, true)
-            SetEntityInvincible(NetworkGetEntityFromNetworkId(ped.netId), true)
-            FreezeEntityPosition(NetworkGetEntityFromNetworkId(ped.netId), true)
-            SetBlockingOfNonTemporaryEvents(NetworkGetEntityFromNetworkId(ped.netId), true)
-            if not IsPedUsingScenario(NetworkGetEntityFromNetworkId(ped.netId), ped.scenario) then
-                TaskStartScenarioInPlace(NetworkGetEntityFromNetworkId(ped.netId), ped.scenario, 0, true)
-            end
-        end
-    end
+function JobStartLocation:onEnter()
+    spawnIDNPC()
+    qtarget:AddTargetEntity(createIDNPC, {
+        options = {
+            {
+                name = Config.Language.pedname,
+                icon = 'fa fa-vcard',
+                label = Config.Language.eyepedname,
+                action = function()
+                    TriggerEvent('tizid:openmenu')
+                end,
+                distance = 10
+            }
+        }
+    })
 end
 function toggleMenu()
     if menuOpen then
@@ -197,3 +176,10 @@ lib.registerContext({
       },
   }
 })
+function spawnIDNPC()
+    lib.RequestModel(Config.NPCModel)
+    createIDNPC = CreatePed(0, Config.NPCModel, Config.NPCLocation, Config.NPCLocationheading, false, true)
+    FreezeEntityPosition(createIDNPC, true)
+    SetBlockingOfNonTemporaryEvents(createIDNPC, true)
+    SetEntityInvincible(createIDNPC, true)
+end
