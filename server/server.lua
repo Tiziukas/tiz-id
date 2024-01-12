@@ -7,52 +7,6 @@ AddEventHandler('onResourceStart', function(resourceName)
     else 
         MySQL.Async.execute('DELETE FROM fakeid;', function() end)
     end
-
-    for _, ped in pairs(GetAllPeds()) do
-        local pedCoords = GetEntityCoords(ped)
-        for k, deliveryLocation in pairs(Config.PedLocation) do
-            local deliveryCoords = vec3(deliveryLocation.ped.coords.x, deliveryLocation.ped.coords.y, deliveryLocation.ped.coords.z)
-            local dist = #(pedCoords - deliveryCoords)
-            if dist < 2 then
-                DeleteEntity(ped)
-            end
-        end
-    end
-
-    -- Creates the necessary peds on resource start
-    TriggerEvent("tizid:initPedsS")
-end)
-RegisterServerEvent("tizid:initPedsS")
-AddEventHandler("tizid:initPedsS", function()
-
-    for k, bossType in pairs(Config.PedLocation) do
-
-        bossType.ped.model = bossType.ped.model
-
-        bossType.ped.scenario = bossType.ped.scenario
-
-        pedEntity = CreatePed(0, bossType.ped.model, bossType.ped.coords, true, false)
-
-        FreezeEntityPosition(pedEntity, true)
-        SetPedConfigFlag(pedEntity, 43, true) -- CPED_CONFIG_FLAG_DisablePlayerLockon
-        SetPedConfigFlag(pedEntity, 128, false) -- CPED_CONFIG_FLAG_CanBeAgitated
-
-        ped = {}
-        ped.bossType = k
-        ped.entity = pedEntity
-        ped.netId = NetworkGetNetworkIdFromEntity(pedEntity)
-        ped.scenario = bossType.ped.scenario
-
-        bossPeds[ped.bossType] = ped
-    end
-    pedsCreated = true
-end)
-
-lib.callback.register('tizid:getpeds', function(source)
-    while not pedsCreated do
-        Wait(5000)
-    end
-    return bossPeds
 end)
 
 lib.callback.register('tizid:getnames', function(meow)
