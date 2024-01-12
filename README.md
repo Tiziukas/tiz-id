@@ -7,6 +7,5 @@ tiz-id - Fake ID System
 * es_extended - https://github.com/esx-framework
 ## Inspiration
 * License UI psd - https://github.com/jonassvensson4/jsfour-idcard
-* Ped Creation - https://github.com/gfg-roleplay/gfg_deliveries
 ##  Preview
 [Video](https://streamable.com/8ncqdo)
